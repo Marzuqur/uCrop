@@ -52,6 +52,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.transition.AutoTransition;
 import androidx.transition.Transition;
 import androidx.transition.TransitionManager;
@@ -125,12 +127,41 @@ public class UCropActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ucrop_activity_photobox);
 
+        //  Setting Insets for edge-to-edge-display
+        setInsets();
+
         final Intent intent = getIntent();
 
         setupViews(intent);
         setImageData(intent);
         setInitialState();
         addBlockingView();
+    }
+
+    //  Chat-GPT idea approach
+    private void setInsets(){
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.ucrop_photobox), (v, insets) ->
+                {
+                    androidx.core.graphics.Insets systemBarInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+                    View tb = findViewById(R.id.toolbar);
+
+                    v.setPadding(
+                            0,
+                            0,
+                            0,
+                            systemBarInsets.bottom
+                    );
+
+                    tb.setPadding(
+                            0,
+                            systemBarInsets.top,
+                            0,
+                            0
+                    );
+
+                    return insets;
+                }
+        );
     }
 
     @Override
